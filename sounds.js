@@ -9,7 +9,7 @@ const fileNames = fs.readdirSync(soundsFolder).map(file => {
 
 
 function playSound() {
-    var item = fileNames[Math.floor(Math.random() * fileNames.length)];
+    const item = fileNames[Math.floor(Math.random() * fileNames.length)];
     console.log('Playing', item);
     player.play('./sounds/' + item, function (err) {
         if (err) throw err
