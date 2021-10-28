@@ -1,19 +1,25 @@
 require('dotenv/config')
-const { RingApi } = require('ring-client-api'),
-  { readFile, writeFile } = require('fs'),
-  { promisify } = require('util')
+const { RingApi } = require('ring-client-api');
+const { readFile, writeFile } = require('fs');
+const { promisify } = require('util');
+const {redBlinkingLights, reset} = require('./hue');
+const {playSound} = require('./sounds');
 
-async function example() {
+const RESET_TIME_IN_SECONDS = 120;
+const RESET_TIME = RESET_TIME_IN_SECONDS * 1000;
+let timer;
+
+async function main() {
   const { env } = process,
     ringApi = new RingApi({
-    // This value comes from the .env file
-    refreshToken: env.RING_REFRESH_TOKEN,
-    // Listen for dings and motion events
-    cameraDingsPollingSeconds: 2,
-    debug: true,
-  }),
-  locations = await ringApi.getLocations(),
-  allCameras = await ringApi.getCameras()
+      // This value comes from the .env file
+      refreshToken: env.RING_REFRESH_TOKEN,
+      // Listen for dings and motion events
+      cameraDingsPollingSeconds: 2,
+      debug: true,
+    }),
+    locations = await ringApi.getLocations(),
+    allCameras = await ringApi.getCameras()
 
   console.log(
     `Found ${locations.length} location(s) with ${allCameras.length} camera(s).`
@@ -74,18 +80,27 @@ async function example() {
   }
 
   if (allCameras.length) {
-    allCameras.forEach((camera) => {
-      camera.onNewDing.subscribe((ding) => {
+    allCameras.forEach(async (camera) => {
+      camera.onNewDing.subscribe(async (ding) => {
+        playSound();
+        const promises =  await redBlinkingLights();
+        clearInterval(timer)
+        Promise.all(promises).then((d) => {
+          console.log('i have resolved everything...', d);
+          timer = setTimeout(() => {
+            console.log('reset')
+            reset();
+          }, RESET_TIME);
+        })
         const event =
           ding.kind === 'motion'
             ? 'Motion detected'
             : ding.kind === 'ding'
-            ? 'Doorbell pressed'
-            : `Video started (${ding.kind})`
+              ? 'Doorbell pressed'
+              : `Video started (${ding.kind})`
 
         console.log(
-          `${event} on ${camera.name} camera. Ding id ${
-            ding.id_str
+          `${event} on ${camera.name} camera. Ding id ${ding.id_str
           }.  Received at ${new Date()}`
         )
       })
@@ -95,4 +110,5 @@ async function example() {
   }
 }
 
-example()
+reset();
+main()
