@@ -82,16 +82,19 @@ async function main() {
   if (allCameras.length) {
     allCameras.forEach(async (camera) => {
       camera.onNewDing.subscribe(async (ding) => {
-        playSound();
-        const promises =  await redBlinkingLights();
-        clearInterval(timer)
-        Promise.all(promises).then((d) => {
-          console.log('i have resolved everything...', d);
-          timer = setTimeout(() => {
-            console.log('reset')
-            reset();
-          }, RESET_TIME);
-        })
+        if (ding.kind === 'motion') {
+          playSound();
+        } else {
+          const promises =  await redBlinkingLights();
+          clearInterval(timer)
+          Promise.all(promises).then((d) => {
+            console.log('i have resolved everything...', d);
+            timer = setTimeout(() => {
+              console.log('reset')
+              reset();
+            }, RESET_TIME);
+          })
+        }
         const event =
           ding.kind === 'motion'
             ? 'Motion detected'
