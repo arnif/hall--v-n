@@ -4,6 +4,7 @@ const { readFile, writeFile } = require('fs');
 const { promisify } = require('util');
 const {redBlinkingLights, reset} = require('./hue');
 const {playSound} = require('./sounds');
+const {playSonos} = require('./sonos');
 
 const RESET_TIME_IN_SECONDS = 120;
 const RESET_TIME = RESET_TIME_IN_SECONDS * 1000;
@@ -82,7 +83,8 @@ async function main() {
   if (allCameras.length) {
     allCameras.forEach(async (camera) => {
       camera.onNewDing.subscribe(async (ding) => {
-        playSound();
+        // playSound();
+        playSonos();
         const promises =  await redBlinkingLights();
         clearInterval(timer)
         Promise.all(promises).then((d) => {

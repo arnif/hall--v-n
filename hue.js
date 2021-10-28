@@ -5,7 +5,7 @@ const v3 = require('node-hue-api').v3;
 const LightState = v3.lightStates.LightState;
 
 
-const LIGHTS = [10, 11, 12, 14, 15]
+const LIGHTS = [2, 10, 11, 12, 14, 15]
 
 const USERNAME = process.env.HUE_BRIDGE_USER;
 
