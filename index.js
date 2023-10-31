@@ -3,25 +3,27 @@ const { RingApi } = require("ring-client-api");
 const { readFile, writeFile } = require("fs");
 const { promisify } = require("util");
 const { redBlinkingLights, reset } = require("./hue");
-const { playSound } = require("./sounds");
-const { playSonos } = require("./sonos");
+const { playScarySonos, playHalloweenSonos, clearSonos } = require("./sonos");
 
 const RESET_TIME_IN_SECONDS = 120;
 const RESET_TIME = RESET_TIME_IN_SECONDS * 1000;
 let timer;
 
 async function main() {
+  playHalloweenSonos();
   const { env } = process,
     ringApi = new RingApi({
       // This value comes from the .env file
       refreshToken: env.RING_REFRESH_TOKEN,
       // Listen for dings and motion events
       cameraDingsPollingSeconds: 2,
+      // locationIds: [""],
       debug: true,
     }),
     locations = await ringApi.getLocations(),
     allCameras = await ringApi.getCameras();
 
+  // get location ids
   console.log(
     `Found ${locations.length} location(s) with ${allCameras.length} camera(s).`
   );
@@ -45,75 +47,74 @@ async function main() {
     }
   );
 
-  for (const location of locations) {
-    let haveConnected = false;
-    location.onConnected.subscribe((connected) => {
-      if (!haveConnected && !connected) {
-        return;
-      } else if (connected) {
-        haveConnected = true;
-      }
+  // Here, we are picking the first location. You may want to choose a specific location based on your requirements.
+  const firstLocation = locations[0];
 
-      const status = connected ? "Connected to" : "Disconnected from";
-      console.log(`**** ${status} location ${location.name} - ${location.id}`);
-    });
-  }
+  const camera = firstLocation.cameras[0];
 
-  for (const location of locations) {
-    const cameras = location.cameras,
-      devices = await location.getDevices();
+  console.log(
+    `Listening to doorbell and motion events for location: ${firstLocation.name}`
+  );
 
+  camera.onDoorbellPressed.subscribe((event) => {
     console.log(
-      `\nLocation ${location.name} (${location.id}) has the following ${cameras.length} camera(s):`
+      `Doorbell pressed at ${event.created_at} for device ${event.device_id}`
     );
+    // redBlinkingLights();
+    playScarySonos();
+    setTimeout(() => {
+      playHalloweenSonos();
+    }, 10000);
 
-    for (const camera of cameras) {
-      console.log(`- ${camera.id}: ${camera.name} (${camera.deviceType})`);
-    }
+    setTimeout(() => {
+      // reset();
+    }, RESET_TIME);
+  });
 
-    console.log(
-      `\nLocation ${location.name} (${location.id}) has the following ${devices.length} device(s):`
-    );
+  // camera.onMotionDetected.subscribe((event) => {
+  //   console.log(
+  //     `Motion detected at ${event.created_at} for device ${event.device_id}`
+  //   );
+  //   playScarySonos();
+  // });
 
-    for (const device of devices) {
-      console.log(`- ${device.zid}: ${device.name} (${device.deviceType})`);
-    }
-  }
+  // if (allCameras.length) {
+  //   allCameras.forEach(async (camera) => {
+  //     camera.onNewDing.subscribe(async (ding) => {
+  //       playScarySonos();
+  //       // if (ding.kind === "motion") {
+  //       // playScarySonos();
+  //       // } else {
+  //       // playScarySonos();
+  //       // const promises = redBlinkingLights();
+  //       // clearInterval(timer);
+  //       // Promise.all(promises).then((d) => {
+  //       //   console.log("i have resolved everything...", d);
+  //       //   timer = setTimeout(() => {
+  //       //     console.log("reset");
+  //       //     reset();
+  //       //   }, RESET_TIME);
+  //       // });
+  //       // }
+  //       const event =
+  //         ding.kind === "motion"
+  //           ? "Motion detected"
+  //           : ding.kind === "ding"
+  //           ? "Doorbell pressed"
+  //           : `Video started (${ding.kind})`;
 
-  if (allCameras.length) {
-    allCameras.forEach(async (camera) => {
-      camera.onNewDing.subscribe(async (ding) => {
-        if (ding.kind === "motion") {
-          playSonos();
-        } else {
-          const promises = await redBlinkingLights();
-          clearInterval(timer);
-          Promise.all(promises).then((d) => {
-            console.log("i have resolved everything...", d);
-            timer = setTimeout(() => {
-              console.log("reset");
-              reset();
-            }, RESET_TIME);
-          });
-        }
-        const event =
-          ding.kind === "motion"
-            ? "Motion detected"
-            : ding.kind === "ding"
-            ? "Doorbell pressed"
-            : `Video started (${ding.kind})`;
+  //       console.log(
+  //         `${event} on ${camera.name} camera. Ding id ${
+  //           ding.id_str
+  //         }.  Received at ${new Date()}`
+  //       );
+  //     });
+  //   });
 
-        console.log(
-          `${event} on ${camera.name} camera. Ding id ${
-            ding.id_str
-          }.  Received at ${new Date()}`
-        );
-      });
-    });
-
-    console.log("Listening for motion and doorbell presses on your cameras.");
-  }
+  console.log("Listening for motion and doorbell presses on your cameras.");
+  // }
 }
-
-reset();
+// playScarySonos();
+// reset();
 main();
+// redBlinkingLights();

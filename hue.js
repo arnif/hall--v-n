@@ -4,7 +4,7 @@ const deviceName = "halloween";
 const v3 = require("node-hue-api").v3;
 const LightState = v3.lightStates.LightState;
 
-const LIGHTS = [2, 10, 11, 12, 14, 15];
+const LIGHTS = [2, 10, 11, 12, 14, 15, 22];
 
 const USERNAME = process.env.HUE_BRIDGE_USER;
 
@@ -18,6 +18,9 @@ function setLights(state) {
       })
       .then((api) => {
         // Using a LightState object to build the desired state
+        // api.lights.getAll().then((lights) => {
+        //   console.log("lights", lights);
+        // });
         const prom = LIGHTS.map((id) => {
           return api.lights.setLightState(id, state);
         });
@@ -44,7 +47,7 @@ function redBlinkingLights() {
 function reset() {
   const state = new LightState()
     .on(true)
-    .white(153, 100)
+    .rgb(255, 0, 0)
     .brightness(100)
     .saturation(100);
 
