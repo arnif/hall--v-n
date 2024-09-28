@@ -1,7 +1,5 @@
 const { WLEDClient } = require("wled-client");
 
-const blinkDuration = 10 * 1000; // 10 seconds
-
 const wledInstances = [
   "10.0.1.50", // Cube
   "10.0.1.8", // Arcade machine
@@ -15,7 +13,7 @@ async function initWledInstances() {
     for (const ip of wledInstances) {
       const wled = new WLEDClient(ip);
       await wled.init();
-      wled.wledClients[ip] = wled;
+      wledClients[ip] = wled;
       console.log(
         `WLED instance ${ip} initialized. Version: ${wled.info.version}`
       );
@@ -40,7 +38,7 @@ async function blinkWleds() {
           await wled.setBrightness(255); // Max brightness
         } else {
           // Turn off on odd intervals (or set to white if you prefer)
-        //   await wled.setColor({ r: 255, g: 255, b: 255 }); // White color (optional)
+          await wled.setColor({ r: 255, g: 255, b: 255 }); // White color (optional)
           await wled.setBrightness(0); // Turn off the light
         }
       }
@@ -53,15 +51,22 @@ async function blinkWleds() {
     console.error(`Error blinking WLEDs: ${error.message}`);
   }
 }
+
 // Function to reset WLEDs to white
 async function resetWleds() {
   try {
     for (const wled of Object.values(wledClients)) {
       await wled.setColor({ r: 255, g: 255, b: 255 }); // Set to white
+      await wled.setBrightness(255); // Full brightness
     }
   } catch (error) {
     console.error(`Error resetting WLEDs: ${error.message}`);
   }
+}
+
+// Utility function to sleep (delay)
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // Expose the functions for use in other files
