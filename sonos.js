@@ -2,8 +2,8 @@ const { Sonos } = require("sonos");
 const fs = require("fs");
 const mp3Duration = require("mp3-duration"); // To get the duration of mp3 files
 
-const volume = 20;
-const music_volume = 60;
+const volume = 30;
+const music_volume = 20;
 
 const sonos = new Sonos("10.0.1.140");
 const sonosMusic = new Sonos("10.0.1.65");
