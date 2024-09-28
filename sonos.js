@@ -57,9 +57,9 @@ async function getMp3Duration(item) {
 
   // If file doesn't exist locally, set a default duration (for remote files)
   console.log(
-    "File not found locally, returning default duration of 30 seconds."
+    "File not found locally, returning default duration of 10 seconds."
   );
-  return 30000; // Default to 30 seconds if file is not available locally
+  return 10000; // Default to 10 seconds if file is not available locally
 }
 
 module.exports = { playScarySonos, clearSonos };
