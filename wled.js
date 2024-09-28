@@ -27,7 +27,7 @@ async function initWledInstances() {
 // Function to blink WLEDs red for 10 seconds (toggle red and off/white)
 async function blinkWleds(soundDuration) {
   try {
-    const blinkDuration = soundDuration // 10 seconds
+    const blinkDuration = soundDuration; // 10 seconds
     const blinkInterval = 500; // Toggle every 500ms (half a second)
     const numBlinks = Math.floor(blinkDuration / blinkInterval); // Total blinks
 
@@ -39,7 +39,7 @@ async function blinkWleds(soundDuration) {
           await wled.setBrightness(255); // Max brightness
         } else {
           // Turn off on odd intervals (or set to white if you prefer)
-        //   await wled.setColor({ r: 255, g: 255, b: 255 }); // White color (optional)
+          //   await wled.setColor({ r: 255, g: 255, b: 255 }); // White color (optional)
           await wled.setBrightness(0); // Turn off the light
         }
       }
