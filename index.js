@@ -1,9 +1,15 @@
 const Gpio = require("pigpio").Gpio;
-const { playScarySonos, playMusic, pauseMusic } = require("./sonos");
+const {
+  playScarySonos,
+  playMusic,
+  setMusicVolume,
+} = require("./sonos");
 const { blinkWleds, initWledInstances } = require("./wled");
 
 const MOTION_SENSOR_PIN = 4; // GPIO pin for motion sensor
 let isCooldown = false; // Flag to track cooldown state
+
+const ADDITIONAL_COOLDOWN = 30000; // Additional cooldown time in milliseconds
 
 // Initialize the motion sensor pin
 const motionSensor = new Gpio(MOTION_SENSOR_PIN, {
@@ -23,19 +29,22 @@ motionSensor.on("alert", async (level) => {
       console.log("Motion detected, but cooldown is active. No action taken.");
     } else {
       console.log("Motion detected!");
-
+      setMusicVolume(10); // Set music volume to 10%
       // Trigger sound and WLED blinking
       const soundDuration = await playScarySonos(); // Get duration from Sonos
       blinkWleds();
 
-      // Enter cooldown state for the duration of the sound + 10 seconds
-      const cooldownTime = soundDuration + 10000;
+      // Enter cooldown state for the duration of the sound + additional time
+      const cooldownTime = soundDuration + ADDITIONAL_COOLDOWN;
       console.log(`Cooldown for ${cooldownTime / 1000} seconds`);
 
       isCooldown = true;
       setTimeout(() => {
         isCooldown = false;
-        console.log("Cooldown ended, ready for next trigger.");
+        console.log(
+          "Cooldown ended, setting music volume to default. Ready for next trigger."
+        );
+        setMusicVolume(); // Set music volume back to default
       }, cooldownTime);
     }
   }
@@ -43,6 +52,5 @@ motionSensor.on("alert", async (level) => {
 
 process.on("SIGINT", () => {
   console.log("Exiting...");
-  pauseMusic();
   process.exit();
 });
