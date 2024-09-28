@@ -11,7 +11,7 @@ const soundsFolder = "./sounds/";
 const soundPath = "https://github.com/arnif/hall--v-n/raw/main/sounds/";
 
 // Load the file names
-const fileNames = require("./sounds.json");
+const fileNames = require("./soundFiles.json");
 
 function clearSonos() {
   sonos.flush();
