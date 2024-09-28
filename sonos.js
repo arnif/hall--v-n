@@ -1,65 +1,65 @@
 const { Sonos } = require("sonos");
 const fs = require("fs");
-const mp3Duration = require("mp3-duration"); // Library to get MP3 duration
+const mp3Duration = require("mp3-duration"); // To get the duration of mp3 files
 
-// Sonos settings
-const volume = 20;
+const volume = 100;
+const music_volume = 60;
+
 const sonos = new Sonos("10.0.1.140");
 
-// Paths for the sounds
 const soundsFolder = "./sounds/";
 const soundPath = "https://github.com/arnif/hall--v-n/raw/main/sounds/";
 
-// Load the sounds from the JSON file
-const soundFiles = JSON.parse(fs.readFileSync("./soundFiles.json", "utf8"));
+// Load the file names
+const fileNames = require("./sounds.json");
 
-// Cooldown flag
-let isPlaying = false;
-
-// Function to play a random scary sound
-function playScarySonos() {
-  if (isPlaying) {
-    console.log("Cooldown active, skipping this motion event.");
-    return;
-  }
-
-  if (soundFiles.length === 0) {
-    console.log("No sound files available to play.");
-    return;
-  }
-
-  // Select a random sound file from the JSON
-  const randomSound = soundFiles[Math.floor(Math.random() * soundFiles.length)];
-  console.log("Playing remote sound:", randomSound);
-
-  // Play the sound from the GitHub URL
-  sonos.setVolume(volume);
-  sonos
-    .play(soundPath + randomSound)
-    .then(() => {
-      console.log(`Playing sound: ${randomSound}`);
-
-      // Use a local file to get the duration (since we can't access remote file duration directly)
-      const localSoundFilePath = soundsFolder + randomSound;
-
-      // Get the duration of the local MP3 file
-      mp3Duration(localSoundFilePath, (err, duration) => {
-        if (err) return console.log(`Error getting duration: ${err.message}`);
-        console.log(`Sound duration: ${duration} seconds`);
-
-        // Set the cooldown based on the duration of the file
-        isPlaying = true;
-        setTimeout(() => {
-          isPlaying = false; // Cooldown is over
-          console.log("Cooldown over, ready to play again.");
-        }, duration * 1000); // Convert to milliseconds
-      });
-    })
-    .catch((error) => {
-      console.log(`Error playing sound: ${randomSound}`, error);
-    });
-
-  sonos.getVolume().then((volume) => console.log(`Current volume = ${volume}`));
+function clearSonos() {
+  sonos.flush();
 }
 
-module.exports = { playScarySonos };
+// Modify playScarySonos to return duration of the sound
+async function playScarySonos() {
+  try {
+    const item = fileNames[Math.floor(Math.random() * fileNames.length)];
+    const fullPath = soundPath + item;
+
+    console.log("Playing", fullPath);
+
+    // Set the volume
+    sonos.setVolume(volume);
+    // Play the sound on Sonos
+    sonos.play(fullPath);
+
+    // Get the duration of the mp3 file (this can be done for local files, not for remote mp3s)
+    const duration = await getMp3Duration(item);
+
+    // Return the duration (in milliseconds)
+    return duration;
+  } catch (error) {
+    console.log("Error playing sound:", error);
+  }
+}
+
+// Utility to get the duration of the mp3
+async function getMp3Duration(item) {
+  const localFilePath = `${soundsFolder}${item}`;
+
+  // Check if file exists locally
+  if (fs.existsSync(localFilePath)) {
+    const duration = await new Promise((resolve, reject) => {
+      mp3Duration(localFilePath, (err, duration) => {
+        if (err) return reject(err);
+        resolve(duration * 1000); // Convert to milliseconds
+      });
+    });
+    return duration;
+  }
+
+  // If file doesn't exist locally, set a default duration (for remote files)
+  console.log(
+    "File not found locally, returning default duration of 30 seconds."
+  );
+  return 30000; // Default to 30 seconds if file is not available locally
+}
+
+module.exports = { playScarySonos, clearSonos };
