@@ -28,7 +28,7 @@ motionSensor.on("alert", async (level) => {
       setMusicVolume(10); // Set music volume to 10%
       // Trigger sound and WLED blinking
       const soundDuration = await playScarySonos(); // Get duration from Sonos
-      blinkWleds();
+      blinkWleds(soundDuration); // Blink WLEDs for the duration of
 
       // Enter cooldown state for the duration of the sound + additional time
       const cooldownTime = soundDuration + ADDITIONAL_COOLDOWN;

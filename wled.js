@@ -25,9 +25,9 @@ async function initWledInstances() {
 }
 
 // Function to blink WLEDs red for 10 seconds (toggle red and off/white)
-async function blinkWleds() {
+async function blinkWleds(soundDuration) {
   try {
-    const blinkDuration = 10 * 1000; // 10 seconds
+    const blinkDuration = soundDuration // 10 seconds
     const blinkInterval = 500; // Toggle every 500ms (half a second)
     const numBlinks = Math.floor(blinkDuration / blinkInterval); // Total blinks
 
