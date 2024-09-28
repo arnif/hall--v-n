@@ -14,44 +14,32 @@ const soundPath = "https://github.com/arnif/hall--v-n/raw/main/sounds/";
 // Load the file names
 const fileNames = require("./soundFiles.json");
 
-function clearSonos() {
-  sonos.flush();
-}
+const PLAYLIST_NAME = "Halloween";
 
 async function playMusic() {
-  sonosMusic.setVolume(music_volume);
-  sonosMusic
-    .getPlaylist("1", { start: 0, total: 25 })
-    .then((results) => {
-      const items = results.items;
+  try {
+    sonosMusic.setVolume(music_volume);
+    // Search for available playlists
+    const playlists = await sonosMusic.getMusicLibrary("sonosMusic_playlists");
+    const playlist = playlists.items.find(
+      (item) => item.title === PLAYLIST_NAME
+    );
 
-      // randomize items
-      const randomItems = items.sort(() => Math.random() - 0.5);
+    if (playlist) {
+      console.log(`Playing playlist: ${playlist.title}`);
 
-      // const item = items[Math.floor(Math.random() * items.length)];
-      // console.log("playing", item);
-      // set items in queue
-      randomItems.forEach((item) => {
-        console.log("adding", item.title);
-        sonosMusic.queue(item.uri);
-      });
+      // Queue the playlist
+      await sonosMusic.queue(playlist.uri);
 
-      sonosMusic
-        .play()
-        .then((results) => {
-          console.log("done playing...play next..");
-          console.log(JSON.stringify(results, null, 2));
-        })
-        .catch((error) => {
-          console.log(JSON.stringify(error, null, 2));
-        });
-    })
-    .catch((err) => {
-      console.log("Error occurred %j", err);
-    });
-
-  sonosMusic.getVolume().then((volume) => console.log(`current volume = ${volume}`));
-  // sonosMusic.setVolume(100);
+      // Play the first item in the playlist
+      sonosMusic.play();
+      console.log(`Now playing: ${playlist.title}`);
+    } else {
+      console.log(`Playlist "${PLAYLIST_NAME}" not found.`);
+    }
+  } catch (error) {
+    console.error("Error playing playlist:", error);
+  }
 }
 
 // Modify playScarySonos to return duration of the sound
@@ -99,4 +87,4 @@ async function getMp3Duration(item) {
   return 10000; // Default to 10 seconds if file is not available locally
 }
 
-module.exports = { playScarySonos, clearSonos, playMusic };
+module.exports = { playScarySonos, playMusic };
