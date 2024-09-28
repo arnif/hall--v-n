@@ -1,6 +1,6 @@
 const Gpio = require("pigpio").Gpio;
 const { playScarySonos } = require("./sonos");
-const { blinkWleds } = require("./wled");
+const { blinkWleds, initWledInstances } = require("./wled");
 
 const MOTION_SENSOR_PIN = 4; // GPIO pin for motion sensor
 let isCooldown = false; // Flag to track cooldown state
@@ -10,6 +10,8 @@ const motionSensor = new Gpio(MOTION_SENSOR_PIN, {
   mode: Gpio.INPUT,
   alert: true, // Use alert to detect changes in pin state
 });
+
+initWledInstances();
 
 // Handle motion detection with cooldown logic
 motionSensor.on("alert", async (level) => {
