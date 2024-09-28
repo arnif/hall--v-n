@@ -19,7 +19,7 @@ const PLAYLIST_NAME = "Halloween";
 async function playMusic() {
   try {
     sonosMusic.flush();
-    sonosMusic.setVolume(music_volume);
+    setMusicVolume();
     // Search for available playlists
     const playlists = await sonosMusic.getMusicLibrary("sonos_playlists");
     const playlist = playlists.items.find(
@@ -43,6 +43,10 @@ async function playMusic() {
   }
 }
 
+function setMusicVolume(volume = music_volume) {
+  sonosMusic.setVolume(volume);
+}
+
 function pauseMusic() {
   sonosMusic.pause();
 }
@@ -50,7 +54,6 @@ function pauseMusic() {
 // Modify playScarySonos to return duration of the sound
 async function playScarySonos() {
   try {
-    sonosMusic.setVolume(10);
     const item = fileNames[Math.floor(Math.random() * fileNames.length)];
     const fullPath = soundPath + item;
 
@@ -63,10 +66,6 @@ async function playScarySonos() {
 
     // Get the duration of the mp3 file (this can be done for local files, not for remote mp3s)
     const duration = await getMp3Duration(item);
-
-    setTimeout(() => {
-      sonosMusic.setVolume(music_volume);
-    }, duration);
 
     // Return the duration (in milliseconds)
     return duration;
@@ -97,4 +96,4 @@ async function getMp3Duration(item) {
   return 10000; // Default to 10 seconds if file is not available locally
 }
 
-module.exports = { playScarySonos, playMusic, pauseMusic };
+module.exports = { playScarySonos, playMusic, pauseMusic, setMusicVolume };
