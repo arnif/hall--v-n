@@ -1,15 +1,11 @@
 const Gpio = require("pigpio").Gpio;
-const {
-  playScarySonos,
-  playMusic,
-  setMusicVolume,
-} = require("./sonos");
+const { playScarySonos, playMusic, setMusicVolume } = require("./sonos");
 const { blinkWleds, initWledInstances } = require("./wled");
 
 const MOTION_SENSOR_PIN = 4; // GPIO pin for motion sensor
 let isCooldown = false; // Flag to track cooldown state
 
-const ADDITIONAL_COOLDOWN = 30000; // Additional cooldown time in milliseconds
+const ADDITIONAL_COOLDOWN = 3000; // Additional cooldown time in milliseconds
 
 // Initialize the motion sensor pin
 const motionSensor = new Gpio(MOTION_SENSOR_PIN, {
