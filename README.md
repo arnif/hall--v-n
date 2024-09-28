@@ -1,7 +1,11 @@
 # hall--v-n
 
-A halloween project that integrates against Sonos speakers and Ring doorbell to spook your neighbourhood kids.
+A halloween project that integrates against Sonos speakers and a motion sensor connected to Raspberry Pi to spook your neighbourhood kids.
 
-In order to run this, one needs to have .env file with values for:
+To update the sound json file run:
 
-- RING_REFRESH_TOKEN (See https://github.com/dgreif/ring/wiki/Refresh-Tokens)
+```bash
+node soundScraper.js
+```
+
+That should update the `soundFiles.json`. If there are any sounds you don't want to include just remove them from `soundFiles.json` file
