@@ -1,5 +1,5 @@
 const Gpio = require("pigpio").Gpio;
-const { playScarySonos, playMusic } = require("./sonos");
+const { playScarySonos, playMusic, pauseMusic } = require("./sonos");
 const { blinkWleds, initWledInstances } = require("./wled");
 
 const MOTION_SENSOR_PIN = 4; // GPIO pin for motion sensor
@@ -43,5 +43,6 @@ motionSensor.on("alert", async (level) => {
 
 process.on("SIGINT", () => {
   console.log("Exiting...");
+  pauseMusic();
   process.exit();
 });

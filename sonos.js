@@ -43,6 +43,10 @@ async function playMusic() {
   }
 }
 
+function pauseMusic() {
+  sonosMusic.pause();
+}
+
 // Modify playScarySonos to return duration of the sound
 async function playScarySonos() {
   try {
@@ -93,4 +97,4 @@ async function getMp3Duration(item) {
   return 10000; // Default to 10 seconds if file is not available locally
 }
 
-module.exports = { playScarySonos, playMusic };
+module.exports = { playScarySonos, playMusic, pauseMusic };
