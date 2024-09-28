@@ -15,7 +15,7 @@ async function initWledInstances() {
     for (const ip of wledInstances) {
       const wled = new WLEDClient(ip);
       await wled.init();
-      wledClients[ip] = wled;
+      wled.wledClients[ip] = wled;
       console.log(
         `WLED instance ${ip} initialized. Version: ${wled.info.version}`
       );
@@ -25,22 +25,34 @@ async function initWledInstances() {
   }
 }
 
-// Function to blink WLEDs red for 10 seconds
+// Function to blink WLEDs red for 10 seconds (toggle red and off/white)
 async function blinkWleds() {
   try {
-    for (const wled of Object.values(wledClients)) {
-      await wled.setColor({ r: 255, g: 0, b: 0 }); // Set to red
-      await wled.setBrightness(255); // Max brightness
+    const blinkDuration = 10 * 1000; // 10 seconds
+    const blinkInterval = 500; // Toggle every 500ms (half a second)
+    const numBlinks = Math.floor(blinkDuration / blinkInterval); // Total blinks
+
+    for (let i = 0; i < numBlinks; i++) {
+      for (const wled of Object.values(wledClients)) {
+        if (i % 2 === 0) {
+          // Set to red on even intervals
+          await wled.setColor({ r: 255, g: 0, b: 0 }); // Red color
+          await wled.setBrightness(255); // Max brightness
+        } else {
+          // Turn off on odd intervals (or set to white if you prefer)
+        //   await wled.setColor({ r: 255, g: 255, b: 255 }); // White color (optional)
+          await wled.setBrightness(0); // Turn off the light
+        }
+      }
+      await sleep(blinkInterval); // Wait for the next toggle
     }
 
-    setTimeout(async () => {
-      await resetWleds(); // Reset to white after 10 seconds
-    }, blinkDuration);
+    // After blinking, reset to white
+    await resetWleds();
   } catch (error) {
     console.error(`Error blinking WLEDs: ${error.message}`);
   }
 }
-
 // Function to reset WLEDs to white
 async function resetWleds() {
   try {
