@@ -3,6 +3,7 @@ const { WLEDClient } = require("wled-client");
 const wledInstances = [
   "10.0.1.50", // Cube
   "10.0.1.8", // Arcade machine
+  "10.0.1.17", // Lukt
 ];
 
 const wledClients = {};
@@ -38,7 +39,7 @@ async function blinkWleds() {
           await wled.setBrightness(255); // Max brightness
         } else {
           // Turn off on odd intervals (or set to white if you prefer)
-          await wled.setColor({ r: 255, g: 255, b: 255 }); // White color (optional)
+        //   await wled.setColor({ r: 255, g: 255, b: 255 }); // White color (optional)
           await wled.setBrightness(0); // Turn off the light
         }
       }
