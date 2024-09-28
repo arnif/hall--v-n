@@ -1,5 +1,5 @@
 const Gpio = require("pigpio").Gpio;
-const { playScarySonos } = require("./sonos");
+const { playScarySonos, playMusic } = require("./sonos");
 const { blinkWleds, initWledInstances } = require("./wled");
 
 const MOTION_SENSOR_PIN = 4; // GPIO pin for motion sensor
@@ -12,6 +12,8 @@ const motionSensor = new Gpio(MOTION_SENSOR_PIN, {
 });
 
 initWledInstances();
+
+playMusic();
 
 // Handle motion detection with cooldown logic
 motionSensor.on("alert", async (level) => {
