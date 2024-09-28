@@ -3,7 +3,7 @@ const fs = require("fs");
 const mp3Duration = require("mp3-duration"); // Library to get MP3 duration
 
 // Sonos settings
-const volume = 100;
+const volume = 20;
 const sonos = new Sonos("10.0.1.140");
 
 // Paths for the sounds
