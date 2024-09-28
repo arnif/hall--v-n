@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/arnif/hall--v-n#readme",
   "dependencies": {
+    "axios": "^1.7.7",
+    "cheerio": "^1.0.0",
     "dotenv": "^16.3.1",
     "node-hue-api": "^5.0.0-beta.14",
     "pigpio": "^3.3.1",
