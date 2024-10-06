@@ -9,7 +9,7 @@ const theThingHand = {
 const animatronics = [theThingHand];
 
 
-export function startAllAnimatronics() {
+function startAllAnimatronics() {
     animatronics.forEach(animatronic => {
         fetch(`http://${animatronic.startApi}`)
             .then(res => res.json())
@@ -19,7 +19,7 @@ export function startAllAnimatronics() {
 }
 
 
-export function stopAllAnalimatronics() {
+function stopAllAnalimatronics() {
     animatronics.forEach(animatronic => {
         fetch(`http://${animatronic.endApi}`)
             .then(res => res.json())
@@ -28,3 +28,7 @@ export function stopAllAnalimatronics() {
     });
 }
 
+module.exports = {
+    startAllAnimatronics,
+    stopAllAnalimatronics
+};
