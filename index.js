@@ -1,5 +1,5 @@
 const Gpio = require("pigpio").Gpio;
-const { startAllAnimatronics } = require("./animatronics");
+const { startAllAnimatronics, stopAllAnalimatronics } = require("./animatronics");
 const { playScarySonos, playMusic, setMusicVolume } = require("./sonos");
 const { blinkWleds, initWledInstances } = require("./wled");
 
@@ -44,6 +44,7 @@ motionSensor.on("alert", async (level) => {
           "Cooldown ended, setting music volume to default. Ready for next trigger."
         );
         setMusicVolume(); // Set music volume back to default
+        stopAllAnalimatronics(); // Stop all animatronics
       }, cooldownTime);
     }
   }

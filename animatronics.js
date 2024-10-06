@@ -12,7 +12,7 @@ const animatronics = [theThingHand];
 function startAllAnimatronics() {
     animatronics.forEach(animatronic => {
         fetch(`http://${animatronic.startApi}`)
-            .then(res => res.json())
+            .then(res => res.text())
             .then(data => console.log(data))
             .catch(err => console.log(err));
     });
@@ -22,7 +22,7 @@ function startAllAnimatronics() {
 function stopAllAnalimatronics() {
     animatronics.forEach(animatronic => {
         fetch(`http://${animatronic.endApi}`)
-            .then(res => res.json())
+            .then(res => res.text())
             .then(data => console.log(data))
             .catch(err => console.log(err));
     });
