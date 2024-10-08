@@ -6,7 +6,13 @@ const theThingHand = {
     endApi: '10.0.1.238/stop'
 }
 
-const animatronics = [theThingHand];
+const zombieHand = {
+    name: 'Zombie Hand',
+    startApi: '10.0.1.167/raise',
+    endApi: '10.0.1.167/rest'
+}
+
+const animatronics = [theThingHand, zombieHand];
 
 
 function startAllAnimatronics() {
