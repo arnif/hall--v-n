@@ -1,4 +1,5 @@
 const Gpio = require("pigpio").Gpio;
+const { startAllAnimatronics, stopAllAnalimatronics } = require("./animatronics");
 const { playScarySonos, playMusic, setMusicVolume } = require("./sonos");
 const { blinkWleds, initWledInstances } = require("./wled");
 
@@ -30,6 +31,8 @@ motionSensor.on("alert", async (level) => {
       const soundDuration = await playScarySonos(); // Get duration from Sonos
       blinkWleds(soundDuration); // Blink WLEDs for the duration of
 
+      startAllAnimatronics(); // Start all animatronics
+
       // Enter cooldown state for the duration of the sound + additional time
       const cooldownTime = soundDuration + ADDITIONAL_COOLDOWN;
       console.log(`Cooldown for ${cooldownTime / 1000} seconds`);
@@ -41,6 +44,7 @@ motionSensor.on("alert", async (level) => {
           "Cooldown ended, setting music volume to default. Ready for next trigger."
         );
         setMusicVolume(); // Set music volume back to default
+        stopAllAnalimatronics(); // Stop all animatronics
       }, cooldownTime);
     }
   }
