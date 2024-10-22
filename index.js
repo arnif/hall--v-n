@@ -10,7 +10,7 @@ const {
   setMusicVolume,
   pauseMusic,
 } = require("./sonos");
-const { triggerWleds, initWledInstances } = require("./wled");
+const { triggerWleds, initWledInstances, neutraliseWleds } = require("./wled");
 
 const MOTION_SENSOR_PIN = 4; // GPIO pin for motion sensor
 let isCooldown = false; // Flag to track cooldown state
@@ -52,6 +52,7 @@ motionSensor.on("alert", async (level) => {
         );
         setMusicVolume(); // Set music volume back to default
         stopAllAnalimatronics(); // Stop all animatronics
+        neutraliseWleds(); // Reset WLEDs to neutral state
       }, cooldownTime);
     }
   }

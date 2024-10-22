@@ -116,14 +116,14 @@ async function triggerWleds(soundDuration) {
         return wledInstance.triggeredState(wled, soundDuration); // Pass soundDuration to triggeredState
       })
     );
-    console.log("All WLEDs triggered and returned to neutral state.");
+    console.log("All WLEDs triggered.");
   } catch (error) {
     console.error(`Error triggering WLEDs: ${error.message}`);
   }
 }
 
 // Function to reset WLEDs to their neutral state
-async function resetWleds() {
+async function neutraliseWleds() {
   try {
     for (const wledInstance of Object.values(wledClients)) {
       const wled = wledInstance.client;
@@ -143,5 +143,5 @@ function sleep(ms) {
 module.exports = {
   initWledInstances,
   triggerWleds,
-  resetWleds,
+  neutraliseWleds,
 };
