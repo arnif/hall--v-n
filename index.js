@@ -10,7 +10,7 @@ const {
   setMusicVolume,
   pauseMusic,
 } = require("./sonos");
-const { blinkWleds, initWledInstances } = require("./wled");
+const { triggerWleds, initWledInstances } = require("./wled");
 
 const MOTION_SENSOR_PIN = 4; // GPIO pin for motion sensor
 let isCooldown = false; // Flag to track cooldown state
@@ -36,7 +36,7 @@ motionSensor.on("alert", async (level) => {
       setMusicVolume(10); // Set music volume to 10%
       // Trigger sound and WLED blinking
       const soundDuration = await playScarySonos(); // Get duration from Sonos
-      blinkWleds(soundDuration); // Blink WLEDs for the duration of
+      triggerWleds(soundDuration); // Blink WLEDs for the duration of
 
       startAllAnimatronics(); // Start all animatronics
 
