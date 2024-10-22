@@ -1,5 +1,8 @@
 const Gpio = require("pigpio").Gpio;
-const { startAllAnimatronics, stopAllAnalimatronics } = require("./animatronics");
+const {
+  startAllAnimatronics,
+  stopAllAnalimatronics,
+} = require("./animatronics");
 const { playScarySonos, playMusic, setMusicVolume } = require("./sonos");
 const { blinkWleds, initWledInstances } = require("./wled");
 
