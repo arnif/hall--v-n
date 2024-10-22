@@ -1,5 +1,12 @@
-export const volume = 30;
-export const music_volume = 20;
-export const PLAYLIST_NAME = "Halloween";
+const volume = 30;
+const music_volume = 20;
+const PLAYLIST_NAME = "Halloween";
 
-export const ADDITIONAL_COOLDOWN = 3000; // Additional cooldown time in milliseconds
+const ADDITIONAL_COOLDOWN = 3000; // Additional cooldown time in milliseconds
+
+module.exports = {
+  volume,
+  music_volume,
+  PLAYLIST_NAME,
+  ADDITIONAL_COOLDOWN,
+};
