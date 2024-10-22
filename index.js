@@ -3,13 +3,17 @@ const {
   startAllAnimatronics,
   stopAllAnalimatronics,
 } = require("./animatronics");
-const { playScarySonos, playMusic, setMusicVolume } = require("./sonos");
+const { ADDITIONAL_COOLDOWN } = require("./constants");
+const {
+  playScarySonos,
+  playMusic,
+  setMusicVolume,
+  pauseMusic,
+} = require("./sonos");
 const { blinkWleds, initWledInstances } = require("./wled");
 
 const MOTION_SENSOR_PIN = 4; // GPIO pin for motion sensor
 let isCooldown = false; // Flag to track cooldown state
-
-const ADDITIONAL_COOLDOWN = 3000; // Additional cooldown time in milliseconds
 
 // Initialize the motion sensor pin
 const motionSensor = new Gpio(MOTION_SENSOR_PIN, {
@@ -55,5 +59,6 @@ motionSensor.on("alert", async (level) => {
 
 process.on("SIGINT", () => {
   console.log("Exiting...");
+  pauseMusic();
   process.exit();
 });
