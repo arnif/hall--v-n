@@ -15,7 +15,7 @@ const wledInstances = [
   {
     ip: "10.0.1.8", // Arcade machine
     neutralState: async function (wled) {
-      await wled.setColor({ r: 0, g: 0, b: 255 }); // Set to blue
+      await wled.setColor({ r: 255, g: 0, b: 0 }); // Set to blue
       await wled.setBrightness(150); // Brightness 150
     },
     triggeredState: async function (wled, duration) {
@@ -109,10 +109,14 @@ async function initWledInstances() {
 // Function to trigger WLEDs' triggered state for a specified duration
 async function triggerWleds(soundDuration) {
   try {
-    for (const wledInstance of Object.values(wledClients)) {
-      const wled = wledInstance.client;
-      await wledInstance.triggeredState(wled, soundDuration); // Pass soundDuration to triggeredState
-    }
+    // Run all triggeredState functions simultaneously using Promise.all
+    await Promise.all(
+      Object.values(wledClients).map(async (wledInstance) => {
+        const wled = wledInstance.client;
+        return wledInstance.triggeredState(wled, soundDuration); // Pass soundDuration to triggeredState
+      })
+    );
+    console.log("All WLEDs triggered and returned to neutral state.");
   } catch (error) {
     console.error(`Error triggering WLEDs: ${error.message}`);
   }
