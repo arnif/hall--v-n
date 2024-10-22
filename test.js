@@ -1,4 +1,5 @@
 const { Sonos } = require("sonos");
+const { PLAYLIST_NAME } = require("./constants");
 
 // Initialize Sonos device by providing the IP address
 const sonos = new Sonos("10.0.1.65"); // Replace with your Sonos speaker's IP
@@ -29,4 +30,4 @@ async function playPlaylist(playlistName) {
 }
 
 // Play the playlist by calling the function and providing the name of the playlist
-playPlaylist("Halloween"); // Replace with your playlist name
+playPlaylist(PLAYLIST_NAME); // Replace with your playlist name

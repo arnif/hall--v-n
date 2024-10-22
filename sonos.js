@@ -1,9 +1,8 @@
 const { Sonos } = require("sonos");
 const fs = require("fs");
 const mp3Duration = require("mp3-duration"); // To get the duration of mp3 files
-
-const volume = 30;
-const music_volume = 20;
+const fileNames = require("./soundFiles.json");
+const { music_volume, volume, PLAYLIST_NAME } = require("./constants");
 
 const sonos = new Sonos("10.0.1.140"); // kitchen
 const sonosMusic = new Sonos("10.0.1.65");
@@ -12,9 +11,6 @@ const soundsFolder = "./sounds/";
 const soundPath = "https://github.com/arnif/hall--v-n/raw/main/sounds/";
 
 // Load the file names
-const fileNames = require("./soundFiles.json");
-
-const PLAYLIST_NAME = "Halloween";
 
 async function playMusic() {
   try {
