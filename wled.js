@@ -4,6 +4,7 @@ const wledInstances = [
   "10.0.1.50", // Cube
   "10.0.1.8", // Arcade machine
   "10.0.1.17", // Lukt
+  "10.0.1.66" // restroom
 ];
 
 const wledClients = {};
