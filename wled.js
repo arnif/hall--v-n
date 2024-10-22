@@ -39,8 +39,17 @@ const wledInstances = [
       await wled.setBrightness(200); // Brightness 200
     },
     triggeredState: async function (wled, duration) {
-      // Assuming a blinking function exists in the library that takes duration
-      await wled.blink(duration);
+      const blinkInterval = 500; // Toggle every 500ms
+      const numBlinks = Math.floor(duration / blinkInterval);
+      for (let i = 0; i < numBlinks; i++) {
+        if (i % 2 === 0) {
+          await wled.setColor({ r: 255, g: 0, b: 0 }); // Set to red
+          await wled.setBrightness(255); // Max brightness
+        } else {
+          await wled.setBrightness(0); // Turn off
+        }
+        await sleep(blinkInterval);
+      }
     },
   },
   {
@@ -50,7 +59,7 @@ const wledInstances = [
       await wled.setBrightness(150); // Medium brightness
     },
     triggeredState: async function (wled, duration) {
-      await wled.setColor({ r: 255, g: 165, b: 0 }); // Set to orange
+      await wled.setColor({ r: 255, g: 0, b: 0 }); // Set to orange
       await wled.setBrightness(255); // Max brightness
       await sleep(duration); // Keep in triggered state for the specified duration
     },
