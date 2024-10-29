@@ -55,7 +55,7 @@ async function blinkAllLights(duration) {
       const state = i % 2 === 0 ? "on" : "off";
 
       await Promise.all(
-        lights.map((light) => {
+        lightIds.map((light) => {
           const lightState =
             state === "on"
               ? light.supportsColor
