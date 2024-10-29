@@ -4,6 +4,7 @@ const {
   stopAllAnalimatronics,
 } = require("./animatronics");
 const { ADDITIONAL_COOLDOWN } = require("./constants");
+const { blinkAllLights } = require("./hue");
 const {
   playScarySonos,
   playMusic,
@@ -37,6 +38,7 @@ motionSensor.on("alert", async (level) => {
       // Trigger sound and WLED blinking
       const soundDuration = await playScarySonos(); // Get duration from Sonos
       triggerWleds(soundDuration); // Blink WLEDs for the duration of
+      blinkAllLights(soundDuration); // Blink Hue lights for the duration of the sound
 
       startAllAnimatronics(); // Start all animatronics
 
