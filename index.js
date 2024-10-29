@@ -4,7 +4,7 @@ const {
   stopAllAnalimatronics,
 } = require("./animatronics");
 const { ADDITIONAL_COOLDOWN } = require("./constants");
-const { blinkAllLights } = require("./hue");
+const { blinkAllLights, initializeLights } = require("./hue");
 const {
   playScarySonos,
   playMusic,
@@ -23,6 +23,7 @@ const motionSensor = new Gpio(MOTION_SENSOR_PIN, {
 });
 
 initWledInstances();
+initializeLights();
 
 playMusic();
 
