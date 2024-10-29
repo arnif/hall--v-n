@@ -49,13 +49,17 @@ motionSensor.on("alert", async (level) => {
 
       isCooldown = true;
       setTimeout(() => {
-        isCooldown = false;
         console.log(
-          "Cooldown ended, setting music volume to default. Ready for next trigger."
+          "Sound ended, setting music volume to default. Cooldown status.",
+          isCooldown
         );
         setMusicVolume(); // Set music volume back to default
         stopAllAnalimatronics(); // Stop all animatronics
         neutraliseWleds(); // Reset WLEDs to neutral state
+      }, soundDuration + 1000); // Add 1 second to ensure sound ends before resetting
+      setTimeout(() => {
+        isCooldown = false;
+        console.log("Cooldown ended. Ready for next trigger.");
       }, cooldownTime);
     }
   }
