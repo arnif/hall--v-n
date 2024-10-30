@@ -1,4 +1,5 @@
 const { WLEDClient } = require("wled-client");
+const logger = require("./logger");
 
 const wledInstances = [
   {
