@@ -130,8 +130,8 @@ const wledClients = {};
 
 // Initialize WLED instances
 async function initWledInstances() {
-  try {
-    for (const instance of wledInstances) {
+  for (const instance of wledInstances) {
+    try {
       const wled = new WLEDClient(instance.ip);
       await wled.init();
       wledClients[instance.ip] = { client: wled, ...instance };
@@ -140,9 +140,11 @@ async function initWledInstances() {
       );
       // Set WLED to its neutral state initially
       await instance.neutralState(wled);
+    } catch (error) {
+      logger.error(
+        `Failed to initialize WLED instance ${instance.ip}: ${error.message}`
+      );
     }
-  } catch (error) {
-    logger.error(`Error initializing WLED instances: ${error.message}`);
   }
 }
 
