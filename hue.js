@@ -1,4 +1,5 @@
 const dotenv = require("dotenv");
+const logger = require("./logger");
 dotenv.config();
 
 const v3 = require("node-hue-api").v3;
@@ -25,15 +26,15 @@ async function initializeLights() {
       supportsColor: light.colorGamut !== undefined, // Check if light supports color
     }));
 
-    console.log("Light details initialized:", lightIds);
+    logger.info("Light details initialized:", lightIds);
   } catch (error) {
-    console.error(`Failed to initialize light details: ${error.message}`);
+    logger.error(`Failed to initialize light details: ${error.message}`);
   }
 }
 // Function to make all lights blink for a given duration
 async function blinkAllLights(duration) {
   if (!lightIds.length) {
-    console.warn(
+    logger.warning(
       "Light details are not initialized. Please call 'initializeLights' first."
     );
     return;
@@ -75,7 +76,7 @@ async function blinkAllLights(duration) {
       lightIds.map((light) => api.lights.setLightState(light.id, offState))
     );
   } catch (error) {
-    console.error(`Failed to blink the lights: ${error.message}`);
+    logger.error(`Failed to blink the lights: ${error.message}`);
   }
 }
 

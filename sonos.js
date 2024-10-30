@@ -3,6 +3,7 @@ const fs = require("fs");
 const mp3Duration = require("mp3-duration"); // To get the duration of mp3 files
 const fileNames = require("./soundFiles.json");
 const { music_volume, volume, PLAYLIST_NAME } = require("./constants");
+const logger = require("./logger");
 
 const sonos = new Sonos("10.0.1.140"); // kitchen
 const sonosMusic = new Sonos("10.0.1.65");
@@ -23,19 +24,19 @@ async function playMusic() {
     );
 
     if (playlist) {
-      console.log(`Playing playlist: ${playlist.title}`);
+      logger.info(`Playing playlist: ${playlist.title}`);
 
       // Queue the playlist
       await sonosMusic.queue(playlist.uri);
 
       // Play the first item in the playlist
       sonosMusic.play();
-      console.log(`Now playing: ${playlist.title}`);
+      logger.info(`Now playing: ${playlist.title}`);
     } else {
-      console.log(`Playlist "${PLAYLIST_NAME}" not found.`);
+      logger.info(`Playlist "${PLAYLIST_NAME}" not found.`);
     }
   } catch (error) {
-    console.error("Error playing playlist:", error);
+    logger.error("Error playing playlist:", error);
   }
 }
 
@@ -53,7 +54,7 @@ async function playScarySonos() {
     const item = fileNames[Math.floor(Math.random() * fileNames.length)];
     const fullPath = soundPath + item;
 
-    console.log("Playing", fullPath);
+    logger.info("Playing", fullPath);
 
     // Set the volume
     sonos.setVolume(volume);
@@ -66,7 +67,7 @@ async function playScarySonos() {
     // Return the duration (in milliseconds)
     return duration;
   } catch (error) {
-    console.log("Error playing sound:", error);
+    logger.info("Error playing sound:", error);
   }
 }
 
@@ -86,7 +87,7 @@ async function getMp3Duration(item) {
   }
 
   // If file doesn't exist locally, set a default duration (for remote files)
-  console.log(
+  logger.info(
     "File not found locally, returning default duration of 10 seconds."
   );
   return 10000; // Default to 10 seconds if file is not available locally

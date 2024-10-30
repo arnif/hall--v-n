@@ -1,3 +1,5 @@
+const logger = require("./logger");
+
 const theThingHand = {
   name: "The Thing Hand",
   startApi: "10.0.1.238/wave",
@@ -16,8 +18,8 @@ function startAllAnimatronics() {
   animatronics.forEach((animatronic) => {
     fetch(`http://${animatronic.startApi}`)
       .then((res) => res.text())
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
+      .then((data) => logger.info(data))
+      .catch((err) => logger.error(err));
   });
 }
 
@@ -25,8 +27,8 @@ function stopAllAnalimatronics() {
   animatronics.forEach((animatronic) => {
     fetch(`http://${animatronic.endApi}`)
       .then((res) => res.text())
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
+      .then((data) => logger.info(data))
+      .catch((err) => logger.error(err));
   });
 }
 

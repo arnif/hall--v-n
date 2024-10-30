@@ -5,6 +5,7 @@ const {
 } = require("./animatronics");
 const { ADDITIONAL_COOLDOWN } = require("./constants");
 const { blinkAllLights, initializeLights } = require("./hue");
+const logger = require("./logger");
 const {
   playScarySonos,
   playMusic,
@@ -26,58 +27,62 @@ const motionSensor = new Gpio(MOTION_SENSOR_PIN, {
 async function init() {
   await initWledInstances();
   await initializeLights();
-  console.log("WLED and Hue instances initialized.");
+  logger.info("WLED and Hue instances initialized.");
 
   playMusic(); // Start playing background music
 }
 
 // Execute init and setup motion detection after initialization
-init().then(() => {
-  console.log("Initialization complete, setting up motion detection.");
+init()
+  .then(() => {
+    logger.info("Initialization complete, setting up motion detection.");
 
-  // Handle motion detection with cooldown logic
-  motionSensor.on("alert", async (level) => {
-    if (level === 1) {
-      if (isCooldown) {
-        console.log("Motion detected, but cooldown is active. No action taken.");
-      } else {
-        console.log("Motion detected!");
-        setMusicVolume(10); // Set music volume to 10%
+    // Handle motion detection with cooldown logic
+    motionSensor.on("alert", async (level) => {
+      if (level === 1) {
+        if (isCooldown) {
+          logger.info(
+            "Motion detected, but cooldown is active. No action taken."
+          );
+        } else {
+          logger.info("Motion detected!");
+          setMusicVolume(10); // Set music volume to 10%
 
-        // Trigger sound and WLED blinking
-        const soundDuration = await playScarySonos(); // Get duration from Sonos
-        triggerWleds(soundDuration); // Blink WLEDs for the duration of sound
-        blinkAllLights(soundDuration); // Blink Hue lights for the duration of sound
+          // Trigger sound and WLED blinking
+          const soundDuration = await playScarySonos(); // Get duration from Sonos
+          triggerWleds(soundDuration); // Blink WLEDs for the duration of sound
+          blinkAllLights(soundDuration); // Blink Hue lights for the duration of sound
 
-        startAllAnimatronics(); // Start all animatronics
+          startAllAnimatronics(); // Start all animatronics
 
-        // Enter cooldown state for the duration of the sound + additional time
-        const cooldownTime = soundDuration + ADDITIONAL_COOLDOWN;
-        console.log(`Cooldown for ${cooldownTime / 1000} seconds`);
+          // Enter cooldown state for the duration of the sound + additional time
+          const cooldownTime = soundDuration + ADDITIONAL_COOLDOWN;
+          logger.info(`Cooldown for ${cooldownTime / 1000} seconds`);
 
-        isCooldown = true;
-        setTimeout(() => {
-          console.log("Sound ended, resetting to default state.");
-          setMusicVolume(); // Reset music volume
-          stopAllAnalimatronics(); // Stop all animatronics
-          neutraliseWleds(); // Reset WLEDs to neutral state
-        }, soundDuration + 1000); // Add 1 second to ensure sound ends before resetting
+          isCooldown = true;
+          setTimeout(() => {
+            logger.info("Sound ended, resetting to default state.");
+            setMusicVolume(); // Reset music volume
+            stopAllAnalimatronics(); // Stop all animatronics
+            neutraliseWleds(); // Reset WLEDs to neutral state
+          }, soundDuration + 1000); // Add 1 second to ensure sound ends before resetting
 
-        setTimeout(() => {
-          isCooldown = false;
-          console.log("Cooldown ended. Ready for next trigger.");
-        }, cooldownTime);
+          setTimeout(() => {
+            isCooldown = false;
+            logger.info("Cooldown ended. Ready for next trigger.");
+          }, cooldownTime);
+        }
       }
-    }
+    });
+  })
+  .catch((err) => {
+    logger.error("Initialization error:", err);
+    process.exit(1); // Exit if initialization fails
   });
-}).catch((err) => {
-  console.error("Initialization error:", err);
-  process.exit(1); // Exit if initialization fails
-});
 
 // Handle graceful shutdown
 process.on("SIGINT", () => {
-  console.log("Exiting...");
+  logger.info("Exiting...");
   pauseMusic();
   process.exit();
 });
