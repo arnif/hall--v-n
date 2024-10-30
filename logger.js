@@ -9,7 +9,7 @@ const logger = pino({
           options: {
             colorize: true,
             translateTime: "HH:MM:ss", // Show only the time without date or timezone
-            ignore: "pid",
+            ignore: "pid,hostname",
           },
         }
       : undefined,

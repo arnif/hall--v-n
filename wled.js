@@ -100,30 +100,30 @@ const wledInstances = [
       wled.setPreset(1);
     },
   },
-  {
-    ip: "10.0.1.200", // Entrance
-    neutralState: async function (wled) {
-      logger.info(`Setting Entrance (IP: ${this.ip}) to neutral state`);
-      await wled.setColor({ r: 255, g: 255, b: 255 }); // Set to white
-      await wled.setBrightness(200);
-    },
-    triggeredState: async function (wled, duration) {
-      logger.info(`Setting Entrance (IP: ${this.ip}) to triggered state`);
-      const blinkInterval = 1000;
-      const numBlinks = Math.floor(duration / blinkInterval);
-      for (let i = 0; i < numBlinks; i++) {
-        if (i % 2 === 0) {
-          logger.debug(`Entrance (IP: ${this.ip}) blinking ON`);
-          await wled.setColor({ r: 255, g: 0, b: 0 });
-          await wled.setBrightness(255);
-        } else {
-          logger.debug(`Entrance (IP: ${this.ip}) blinking OFF`);
-          await wled.setBrightness(0);
-        }
-        await sleep(blinkInterval);
-      }
-    },
-  },
+  // {
+  //   ip: "10.0.1.200", // Entrance
+  //   neutralState: async function (wled) {
+  //     logger.info(`Setting Entrance (IP: ${this.ip}) to neutral state`);
+  //     await wled.setColor({ r: 255, g: 255, b: 255 }); // Set to white
+  //     await wled.setBrightness(200);
+  //   },
+  //   triggeredState: async function (wled, duration) {
+  //     logger.info(`Setting Entrance (IP: ${this.ip}) to triggered state`);
+  //     const blinkInterval = 1000;
+  //     const numBlinks = Math.floor(duration / blinkInterval);
+  //     for (let i = 0; i < numBlinks; i++) {
+  //       if (i % 2 === 0) {
+  //         logger.debug(`Entrance (IP: ${this.ip}) blinking ON`);
+  //         await wled.setColor({ r: 255, g: 0, b: 0 });
+  //         await wled.setBrightness(255);
+  //       } else {
+  //         logger.debug(`Entrance (IP: ${this.ip}) blinking OFF`);
+  //         await wled.setBrightness(0);
+  //       }
+  //       await sleep(blinkInterval);
+  //     }
+  //   },
+  // },
 ];
 
 const wledClients = {};
