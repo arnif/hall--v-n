@@ -24,6 +24,7 @@
     "axios": "^1.7.7",
     "cheerio": "^1.0.0",
     "dotenv": "^16.3.1",
+    "express": "^4.21.1",
     "mp3-duration": "^1.1.0",
     "node-hue-api": "^5.0.0-beta.14",
     "pigpio": "^3.3.1",
