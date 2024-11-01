@@ -67,24 +67,13 @@ const wledInstances = [
     ip: "10.0.1.17", // Lukt
     neutralState: async function (wled) {
       logger.info(`Setting Lukt (IP: ${this.ip}) to neutral state`);
-      await wled.setColor({ r: 0, g: 255, b: 0 }); // Set to green
-      await wled.setBrightness(255); // Brightness 200
+      await wled.setBrightness(255);
+      wled.setPreset(1);
     },
     triggeredState: async function (wled, duration) {
       logger.info(`Setting Lukt (IP: ${this.ip}) to triggered state`);
-      const blinkInterval = 500;
-      const numBlinks = Math.floor(duration / blinkInterval);
-      for (let i = 0; i < numBlinks; i++) {
-        if (i % 2 === 0) {
-          logger.debug(`Lukt (IP: ${this.ip}) blinking ON`);
-          await wled.setColor({ r: 255, g: 0, b: 0 });
-          await wled.setBrightness(255);
-        } else {
-          logger.debug(`Lukt (IP: ${this.ip}) blinking OFF`);
-          await wled.setBrightness(0);
-        }
-        await sleep(blinkInterval);
-      }
+      await wled.setBrightness(255);
+      wled.setPreset(2);
     },
   },
   {
