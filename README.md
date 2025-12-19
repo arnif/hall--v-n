@@ -8,4 +8,4 @@ To update the sound json file run:
 node soundScraper.js
 ```
 
-That should update the `soundFiles.json`. If there are any sounds you don't want to include just remove them from `soundFiles.json` file
+That should update the `soundFiles.json`. If there are any sounds you don't want to include just remove them from `soundFiles.json` file.
